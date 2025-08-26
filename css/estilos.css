@@ -1,0 +1,287 @@
+/* estilos del header*/
+header{
+        background-color:hsl(114, 18.50%, 68.20%);
+        padding: 40px 0px;
+        border: 2px solid rgb(15, 8, 8); 
+        text-align: center;
+        } 
+                
+        .titulo-principal{
+                          font-family: Verdana;
+                          color: blue;
+                          font-size: 30px;
+                         }
+
+        .titulo-secundario {
+                          font-family: Georgia;
+                          color: red;
+                          font-size: 20px;
+                          }
+
+/* estilos del nav*/   
+nav{            
+        background-color: hsl(61, 38.40%, 68.80%); 
+        padding: 20px 0px;    
+        border: 2px solid rgb(15, 8, 8);
+        text-align: right;
+        }
+
+nav a {
+        color: blue;              
+        font-size: 16px;        
+        text-decoration: none;    
+        margin-left: 10px;
+        }
+
+/*estilos del footer */
+
+ footer {
+        background-color: #6e9cca;
+        padding: 20px;
+        text-align: center;
+        }
+
+
+/*estilos sectión aside contenedor de los 2 asides */
+      .contenedor {
+         display: flex;
+         gap: 20px;
+      }
+      .contenedor {
+         display: flex;         
+         gap: 20px;            
+      }
+      aside.pagina1 {
+         padding: 20px;
+         width: 40%;             
+      }
+      aside.aside-box {
+         padding: 20px;
+         width: 60%;            
+      }
+ 
+/*estilos sectión aside principal paginas */    
+
+      section {  
+         background-color: hsl(300, 20.00%, 93.10%);           
+         width:30%; 
+         margin: 2px;
+         padding: 100px;
+         border: 2px solid rgb(15, 8, 8); 
+      }
+      .aside-box {
+         font-size: 30px;
+         padding: 20px;
+         margin: 20px;
+         font-family: Arial, sans-serif;
+         background-color:rgb(140, 143, 58); /* crema */
+      }
+
+      /* Estilo base de todas las cajas */
+      .aside-section {
+         padding: 15px;
+         margin-bottom: 15px;
+         border-radius: 5px;
+         color:rgb(36, 20, 122);
+      }
+      .aside-section h4 {
+         margin-top: 0;
+      }
+      .aside-section {
+        color: #fff;
+        text-decoration: underline;
+      }
+
+      
+
+  
+        
+ /*estilos de el aside de aside pagina1, 2, 3 y 4*/
+            aside.pagina1{ 
+                   width:30%; 
+                   margin: 10px;
+                   padding: 20px;
+                   background-color: rgb(193, 188, 104);
+                   border: 2px solid rgb(130, 126, 126);
+                   overflow: hidden;
+                   
+            }
+             aside .box_aside{ 
+                   width:70%; 
+                   margin: 5px;
+                   padding: 70px;
+                   background-color: rgb(238, 238, 242);
+                   border: 3px solid rgb(15, 10, 10);
+                  
+                   }
+                    aside {
+                  background: #f4f4f4;
+                  padding: 10px;
+                  margin: 10px;
+                }
+            
+
+
+/*pagina2 estilos de tablas_de_horario_y_productos */
+           section.tablas_de_horario_y_productos{   
+                  width: 100%;
+                  display:flex;
+                  background-color: hsl(300, 23.10%, 94.90%);           
+                  border: 2px solid rgb(15, 8, 8);
+                  padding: 20px;
+                  gap: 40px; 
+                }
+
+            .tabla-estilo {
+                  width: 100%;
+                  border-collapse: collapse;
+                  margin-top: 20px;
+                  padding: 20px;
+                }
+
+            .tabla-estilo th, .tabla-estilo td {
+                  border: 1px solid #ccc;
+                  padding: 10px;
+                  text-align: center;
+                  padding: 20px;
+                }
+
+            .tabla-estilo th {
+                 background-color: #007BFF;
+                 color: rgb(218, 213, 213);
+                }
+            .tabla-estilo th{ 
+                 background-color: #007BFF;
+                 color: white;
+                }
+
+  /* estilos de las section del index principal*/
+    
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .seccion1 {
+            background-image: url('imagenes/procesoqueso.php');
+            background-position: center;
+            height: 50vh;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+           
+            
+        }
+        .seccion1 h1{ 
+            color: #005f73;
+            font-size: 70px; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
+
+        .seccion2, .seccion3 {
+            padding: 60px 20px;
+            max-width: 1000px;
+            margin: auto;
+        }
+        .seccion2 h2, .seccion3 h2 {
+            color: #005f73;
+            margin-bottom: 20px;
+            font-size: 30px;
+        }
+        .seccion2 p {
+            font-size: 20px;
+        }
+
+        .seccion3 ul {
+            list-style-type: square;
+            padding-left: 20px;
+        }
+        .seccion3 li {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+        
+ /* Estilos generales para el formulario nuevo*/
+section.formulario {
+    background-color:rgb(237, 229, 229);
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+    margin: 30px auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #333;
+}
+
+section.formulario form {
+    display: flex;
+    flex-direction: column;
+}
+
+section.formulario [type="text"],
+section.formulario [type="email"],
+section.formulario [type="date"],
+section.formulario [type="int"],
+section.formulario select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+section.formulario .radiochecks {
+    margin-right: 10px;
+}
+
+section.formulario div {
+    margin-top: 25px;
+}
+
+section.formulario [type="submit"],
+section.formulario [type="reset"] {
+    padding: 12px 20px;
+    margin: 10px 5px 0 0;
+    font-size: 20px;
+    border: none;
+    border-radius: 6px;
+    background-color:rgb(7, 11, 133);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+ 
+
+      div.Galería_Imagenes{ 
+            color:rgb(55, 96, 137);
+            font-size: 20px;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 20px 0; 
+            }
+      main.Galería_Imagenes2{
+            color:rgb(55, 96, 137);
+            font-size: 20px;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 20px 0;
+            }
+
+/* Sección 1: Imagen  index de presentacion con su estilo*/
+
+     .seccion1 {
+            background-image: url('../imagenes/procesoqueso.php');
+            background-position: center;
+            height: 50vh;
+            display:flex;
+            justify-content: center;
+            align-items: center;}   
+ 
+
