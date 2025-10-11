@@ -6,7 +6,7 @@
         <a href="pagina2.php">Horarios de atencion y productos</a>
         <a href="pagina3.php">formulario de compra o contacto</a>
         <a href="pagina4.php">Galería de Imágenes</a> 
-       
+        <a href="../trabajo practico dos tablas/index.php" class="btn btn-success">Administrador de Empleados</a>
     </ul>
 </nav>
 

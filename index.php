@@ -9,6 +9,7 @@
     <body>
     <?php include('php/header.php'); ?>
     <?php include('php/nav_index.php'); ?>
+    
 
         <div class="seccion1">
                <h1>¡¡¡Bienvenidos a Quesera salliquelo!!! </h1>
