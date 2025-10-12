@@ -1,3 +1,5 @@
+
+
 <?php
 // model/db.php
 // Clase encargada de abrir la conexión MySQL y dejarla disponible en $this->con
@@ -42,4 +44,5 @@ class Db {
 
 
   }
+  
 }

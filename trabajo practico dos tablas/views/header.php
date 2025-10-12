@@ -52,15 +52,15 @@
   <!-- Navbar superior oscura -->
   <nav class="navbar navbar-dark bg-dark">
     <div class="container">
-      <!-- “Logo” que vuelve al listado principal de empleados -->
-      <a class="navbar-brand" href="?c=empleado&a=list">Puestos ↔ Empleados</a>
-      <!-- 🔹 Botón para volver al inicio -->      
-      <a href="/MIPROYECTOFINAL/index.php" class="btn btn-secondary m-2">⬅ Volver al Inicio</a>
+      <!-- “Logo” que vuelve al listado principal de empleados -->     
+      <!--Boton para cerrar sesión-->
+      <a href="logout.php" class="btn btn-danger m-2">Cerrar sesión</a>
+      <!-- Botón para volver al inicio -->
+      <a href="/MIPROYECTOFINAL/index.php" class="btn btn-outline-light" > Volver al Inicio</a>
       <!-- Acciones rápidas a la derecha -->
       <div class="d-flex gap-2">
-        <a class="btn btn-outline-light" href="?c=empleado&a=form">+ Nuevo empleado</a>
-        <a class="btn btn-warning" href="?c=puesto&a=list">Puestos</a>
-        <a class="btn btn-outline-warning" href="?c=puesto&a=form">+ Nuevo puesto</a>
+        <a class="btn btn-warning" href="?c=empleado&a=list">Empleado</a>        
+        <a class="btn btn-warning" href="?c=puesto&a=list">Puestos</a>     
       </div>
     </div>
   </nav>

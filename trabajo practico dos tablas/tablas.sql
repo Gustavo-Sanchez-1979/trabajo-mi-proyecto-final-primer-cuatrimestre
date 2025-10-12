@@ -44,3 +44,10 @@ VALUES
 
 ALTER TABLE puestos
   ADD UNIQUE KEY uq_puesto_nombre (nombre);
+
+
+CREATE TABLE usuarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario VARCHAR(50) NOT NULL UNIQUE,
+  contrasenia VARCHAR(255) NOT NULL
+);  
