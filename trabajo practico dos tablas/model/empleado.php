@@ -17,26 +17,27 @@ class Empleado {
    * LEFT JOIN ⇒ muestra TODOS los empleados aunque puesto_id no tenga match.
    */
   public function all(): array {
-    $sql = "SELECT 
-              e.id,
-              e.nombre,
-              e.apellido,
-              e.dni,
-              e.empresa,
-              e.domicilio,
-              e.ciudad,
-              e.provincia,
-              e.pais,
-              e.telefono,
-              e.email,
-              e.creado_en,
-              COALESCE(p.nombre, '(Sin puesto)') AS puesto  -- si no hay match, muestra '(Sin puesto)'
-            FROM empleados e
-            LEFT JOIN puestos p ON p.id = e.puesto_id
-            ORDER BY e.id ASC";
-    $res = $this->con->query($sql);                       // ejecuta la consulta
-    return $res ? $res->fetch_all(MYSQLI_ASSOC) : [];     // devuelve array de arrays (o vacío si falla)
-  }
+  $sql = "SELECT 
+            e.id,
+            e.nombre,
+            e.apellido,
+            e.dni,
+            e.empresa,
+            e.domicilio,
+            e.ciudad,
+            e.provincia,
+            e.pais,
+            e.telefono,
+            e.email,
+            e.creado_en,
+            COALESCE(p.nombre, '(Sin puesto)') AS puesto,
+            COALESCE(p.tarea,  '(Sin tarea)')  AS tarea_puesto
+          FROM empleados e
+          LEFT JOIN puestos p ON p.id = e.puesto_id
+          ORDER BY e.id ASC";
+  $res = $this->con->query($sql);
+  return $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
+}
 
   /**
    * create($d)

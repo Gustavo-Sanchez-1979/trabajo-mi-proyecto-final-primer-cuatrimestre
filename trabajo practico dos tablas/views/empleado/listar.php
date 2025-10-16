@@ -21,7 +21,6 @@ $lista = $data['empleados'] ?? []; // Array de empleados (cada item es un row as
         style="font-size: 0.9rem; table-layout: fixed; width: 100%;">
         <thead class="table-dark">
           <tr>
-            <!-- Encabezados de columnas (deben coincidir con lo que seleccionás en el modelo) -->
             <th>ID</th>
             <th>Nombre</th>
             <th>Apellido</th>
@@ -31,21 +30,18 @@ $lista = $data['empleados'] ?? []; // Array de empleados (cada item es un row as
             <th>Ciudad</th>
             <th>Email</th>
             <th>Puesto</th>
+            <th>Tarea</th> <!-- NUEVA -->
             <th>Creado</th>
-            <th>Acciones</th> <!-- ⬅️ MISMO LUGAR QUE EN PUESTOS: AL FINAL -->
+            <th>Acciones</th>
           </tr>
         </thead>
-
         <tbody>
           <?php if (empty($lista)): ?>
-            <!-- Estado vacío: no hay registros -->
             <tr>
-              <td colspan="11">No hay empleados cargados.</td>
+              <td colspan="12">No hay empleados cargados.</td>
             </tr>
-          <?php else: ?>
-            <?php foreach ($lista as $e): ?>
+            <?php else: foreach ($lista as $e): ?>
               <tr>
-                <!-- celdas: salidas sanitizadas con htmlspecialchars para evitar XSS -->
                 <td><?= (int)$e['id'] ?></td>
                 <td><?= htmlspecialchars($e['nombre']) ?></td>
                 <td><?= htmlspecialchars($e['apellido']) ?></td>
@@ -54,32 +50,18 @@ $lista = $data['empleados'] ?? []; // Array de empleados (cada item es un row as
                 <td><?= htmlspecialchars($e['domicilio'] ?? '') ?></td>
                 <td><?= htmlspecialchars($e['ciudad'] ?? '') ?></td>
                 <td><?= htmlspecialchars($e['email'] ?? '') ?></td>
-
-                <!-- badge para resaltar el puesto; viene de COALESCE(...) AS puesto en el modelo -->
                 <td><span class="badge bg-secondary"><?= htmlspecialchars($e['puesto']) ?></span></td>
-
-                <!-- fecha/hora de creación si tu tabla la tiene (creado_en) -->
+                <td><?= htmlspecialchars($e['tarea_puesto']) ?></td> <!-- NUEVA -->
                 <td><small><?= htmlspecialchars($e['creado_en'] ?? '') ?></small></td>
-
-                <!-- Acciones: Editar / Eliminar -->
                 <td>
-                  <!-- Editar: navega al form de edición con el ID -->
-                  <a class="btn btn-sm btn-warning"
-                    href="?c=empleado&a=edit&id=<?= (int)$e['id'] ?>">
-                    Editar
-                  </a>
-
-                  <!-- Eliminar: GET + confirmación en cliente.
-                       Sugerencia de mejora: hacerlo por POST con token CSRF. -->
+                  <a class="btn btn-sm btn-warning" href="?c=empleado&a=edit&id=<?= (int)$e['id'] ?>">Editar</a>
                   <a class="btn btn-sm btn-danger"
                     href="?c=empleado&a=delete&id=<?= (int)$e['id'] ?>"
-                    onclick="return confirm('¿Eliminar empleado?');">
-                    Eliminar
-                  </a>
+                    onclick="return confirm('¿Eliminar empleado?');">Eliminar</a>
                 </td>
               </tr>
-            <?php endforeach; ?>
-          <?php endif; ?>
+          <?php endforeach;
+          endif; ?>
         </tbody>
       </table>
     </div>

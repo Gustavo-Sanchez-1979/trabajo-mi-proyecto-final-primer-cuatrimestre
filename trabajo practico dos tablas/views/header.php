@@ -66,6 +66,6 @@
   </nav>
 
   <!-- Contenedor principal donde se inyectan las vistas -->
-  <div class="container my-4">
+  <div class="container-fluid my-4">
     <!-- Título de la página (set por cada acción del controlador) -->
     <h1 class="mb-3"><?= htmlspecialchars($page_title ?? '') ?></h1>
