@@ -6,7 +6,8 @@ session_start();
 session_destroy();
 
 // Redirige al usuario al inicio público del sitio (cambiá la ruta si tu carpeta tiene otro nombre).
-header("Location: /miproyectofinal/index.php");
+header("Location: /trabajo-mi-proyecto-final-primer-cuatrimestre/index.php");
 
 // Asegura que el script termine aquí y no siga ejecutando nada más después de la redirección.
 exit();
+

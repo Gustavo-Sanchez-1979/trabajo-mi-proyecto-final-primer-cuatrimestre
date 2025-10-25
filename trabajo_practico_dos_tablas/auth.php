@@ -25,5 +25,13 @@ if (empty($_SESSION['usuario'])) {
     exit();
 }
 
+
+/* Si NO está logueado, lo mando al login del proyecto final */
+if (!isset($_SESSION['usuario'])) {
+    header("Location: /trabajo-mi-proyecto-final-primer-cuatrimestre
+/login.php");
+    exit();
+}
+
 // Si el usuario está logueado, el script continúa normalmente
 // (no hace nada más, simplemente deja pasar la ejecución)

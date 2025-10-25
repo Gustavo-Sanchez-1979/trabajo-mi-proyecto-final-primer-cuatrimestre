@@ -1,14 +1,14 @@
-
-
 <?php
 // model/db.php
 // Clase encargada de abrir la conexión MySQL y dejarla disponible en $this->con
 
-class Db {
+class Db
+{
   // Handler/objeto de conexión (lo usan los modelos)
   public mysqli $con;
 
-  public function __construct() {
+  public function __construct()
+  {
     // ==============================
     // CONFIGURACIÓN DE LA CONEXIÓN
     // ==============================
@@ -41,8 +41,5 @@ class Db {
     // ================================
     // utf8mb4 es el recomendado (mejor que utf8) para caracteres especiales
     $this->con->set_charset("utf8mb4");
-
-
   }
-  
 }

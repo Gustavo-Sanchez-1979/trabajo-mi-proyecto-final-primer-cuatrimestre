@@ -26,6 +26,13 @@
   (Opcional) Lugar recomendado para tus scripts propios:
   <script src="/assets/js/app.js"></script>
 -->
-
+<script>
+  // Activa todos los tooltips del documento
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+      new bootstrap.Tooltip(el);
+    });
+  });
+</script>
 </body>
 </html>

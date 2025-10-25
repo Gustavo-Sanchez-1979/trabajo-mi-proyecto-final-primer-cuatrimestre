@@ -1,8 +1,9 @@
 
 
 <?php
-require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/auth.php'; // obliga login para TODO el panel
 // auth.php
+
 
 if (!isset($_SESSION['usuario'])) {
   header("Location: login.php");

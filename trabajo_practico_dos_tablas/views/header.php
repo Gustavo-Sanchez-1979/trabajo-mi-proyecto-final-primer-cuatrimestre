@@ -52,15 +52,26 @@
   <!-- Navbar superior oscura -->
   <nav class="navbar navbar-dark bg-dark">
     <div class="container">
-      <!-- “Logo” que vuelve al listado principal de empleados -->     
+      <!-- “Logo” que vuelve al listado principal de empleados -->
       <!--Boton para cerrar sesión-->
       <a href="logout.php" class="btn btn-danger m-2">Cerrar sesión</a>
+      <a href="cambiar_contrasenia.php" class="btn btn-warning m-2">Cambiar usuario/contraseña</a>
+      <!--Boton para crear un nuevo usuario solo ingresando como administrador-->
+      <a href="nuevo_usuario.php"
+        class="btn btn-success m-2"
+        data-bs-toggle="tooltip"
+        data-bs-placement="bottom"
+        data-bs-title="Solo para ingreso del administrador">
+        Nuevo usuario
+      </a>
+
       <!-- Botón para volver al inicio -->
-      <a href="/MIPROYECTOFINAL/index.php" class="btn btn-outline-light" > Volver al Inicio</a>
+      <a href="/trabajo-mi-proyecto-final-primer-cuatrimestre
+/index.php" class="btn btn-outline-light"> Volver al Inicio</a>
       <!-- Acciones rápidas a la derecha -->
       <div class="d-flex gap-2">
-        <a class="btn btn-warning" href="?c=empleado&a=list">Empleado</a>        
-        <a class="btn btn-warning" href="?c=puesto&a=list">Puestos</a>     
+        <a class="btn btn-warning" href="?c=empleado&a=list">Empleado</a>
+        <a class="btn btn-warning" href="?c=puesto&a=list">Puestos</a>
       </div>
     </div>
   </nav>
