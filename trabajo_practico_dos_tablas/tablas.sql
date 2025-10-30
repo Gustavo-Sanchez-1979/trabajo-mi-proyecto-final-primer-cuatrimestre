@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-10-2025 a las 22:14:33
+-- Tiempo de generación: 30-10-2025 a las 23:26:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -61,6 +61,62 @@ INSERT INTO `empleados` (`id`, `nombre`, `apellido`, `dni`, `empresa`, `domicili
 (15, 'Marcos', 'apelans', '326549871365', 'La Quesera', 'Belgrano 265', 'salliquelo', 'Buenos Aires', 'Argentina', '32654198745', 'Marcos@hotmail.com.ar', '2025-10-24 20:49:46', 21),
 (17, 'Gustavo', 'sanchez', '12365477777', 'La Quesera', 'Calle francia 555', 'salliquelo', 'cordoba', 'Argentina', '45632214444', 'gus@hotmail.com.ar', '2025-10-25 14:39:59', 18);
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `puestos`
+--
+
+CREATE TABLE `puestos` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `tarea` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `puestos`
+--
+
+INSERT INTO `puestos` (`id`, `nombre`, `tarea`) VALUES
+(7, 'Preprensa', 'moldeador'),
+(8, 'Desmolde', 'Desmoldar'),
+(9, 'Tinas queseras', 'Quesero'),
+(10, 'Pasteurizador', 'operar los equipos'),
+(12, 'Seguridad', 'Portero'),
+(13, 'Saladero', 'sacador y echador de hormas'),
+(15, 'Envasadora', 'envasar y paletizar'),
+(16, 'Autoelevador', 'Conductor'),
+(17, 'Sala de Elaboracion', 'Limpieza'),
+(18, 'Camara expedición', 'Almacenamiento de quesos y carga'),
+(19, 'sala de pintado', 'pintor'),
+(20, 'Cremeria', 'Operario'),
+(21, 'Dulcero', 'operario');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `id` int(11) NOT NULL,
+  `usuario` varchar(50) NOT NULL,
+  `contrasenia` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id`, `usuario`, `contrasenia`) VALUES
+(1, 'gus', '$2y$10$PKE14oSU4/zzjILFqu8SrOuUgRShZ7t/IoM1svoTvNcKwmJKJ.bOu'),
+(2, 'carlos', '$2y$10$uH26NqouVRPL4WE2A30tUu9/h3krKnMikLRyIfpR6fDgSOaEw9sdO'),
+(3, 'admin', '$2y$10$SPRgp8NlJQQWUmBoN9NPuumxROuff4xSL5Q4rJU4nuxAyArpklqSe'),
+(4, 'mariel', '$2y$10$yME2vYJRNEiH56/CcSrVbem1jMx1OVUh/1Wg.7Bq82KQHZNYp5D62'),
+(5, 'juan', '$2y$10$eamMO5SaVJA0F8PByqi5QOCfIKKPLIpq/n/SS3bHViExYpDpaHQkm'),
+(6, 'Marta', '$2y$10$PU8Mp0HBl3dNVbpAvmIGIe0mRKdQHDcEJbeU66AvvZ6oNk4QoV8Ce'),
+(7, 'Juan Pablo', '$2y$10$xl7gP8NLQfOUc.4Ua4RMCevSQJ4VMSb6HWT6rqEBpnYlAYnC6rQpm');
+
 --
 -- Índices para tablas volcadas
 --
@@ -74,6 +130,20 @@ ALTER TABLE `empleados`
   ADD KEY `fk_empleado_puesto` (`puesto_id`);
 
 --
+-- Indices de la tabla `puestos`
+--
+ALTER TABLE `puestos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_puesto_nombre` (`nombre`);
+
+--
+-- Indices de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `usuario` (`usuario`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -82,6 +152,18 @@ ALTER TABLE `empleados`
 --
 ALTER TABLE `empleados`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- AUTO_INCREMENT de la tabla `puestos`
+--
+ALTER TABLE `puestos`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Restricciones para tablas volcadas
