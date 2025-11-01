@@ -4,3 +4,4 @@
 16/10/2025 " Se actualizo empleado.php, listar.php y header.php con nuevas mejoras (se agrego la tabla tarea que faltaba) "
 25/10/2025 " se renombro carpeta, se agregaron mas funciones,se utiliza catch y se incorporo left join "
 30/10/2025 " se actualizan las tablas ya que no se habia realizado "
+1/11/2025 " se agrega boton volver por si ingresan a administrador de empleados y no estan registrados puedan volver a pagina principal que faltaba "
