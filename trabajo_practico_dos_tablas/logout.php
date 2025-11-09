@@ -1,13 +1,31 @@
 <?php
-// Inicia o retoma la sesión actual. Es necesario para poder destruirla después.
-session_start();
+// logout.php
 
-// Destruye por completo la sesión del usuario (borra los datos de $_SESSION y el id de sesión).
+// Asegurar sesión activa
+if (session_status() !== PHP_SESSION_ACTIVE) {
+  session_start();
+}
+
+// Vaciar variables de sesión
+$_SESSION = [];
+
+// Borrar cookie de sesión (si aplica)
+if (ini_get('session.use_cookies')) {
+  $params = session_get_cookie_params();
+  setcookie(
+    session_name(),
+    '',
+    time() - 42000,
+    $params['path'],
+    $params['domain'],
+    $params['secure'],
+    $params['httponly']
+  );
+}
+
+// Destruir sesión
 session_destroy();
 
-// Redirige al usuario al inicio público del sitio (cambiá la ruta si tu carpeta tiene otro nombre).
+// Redirigir al index público del proyecto
 header("Location: /trabajo-mi-proyecto-final-primer-cuatrimestre/index.php");
-
-// Asegura que el script termine aquí y no siga ejecutando nada más después de la redirección.
-exit();
-
+exit;

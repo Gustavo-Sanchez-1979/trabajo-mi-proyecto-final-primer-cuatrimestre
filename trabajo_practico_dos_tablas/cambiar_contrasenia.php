@@ -100,7 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body class="bg-light">
 <div class="container mt-5 col-md-5">
   <div class="card shadow p-4">
-    <h3 class="text-center mb-3">Cambiar usuario/contraseña</h3>
+    <h3 class="text-center mb-3">Cambiar su nombre de usuario/o su contraseña</h3>
 
     <?php if ($mensaje): ?>
       <div class="alert alert-success"><?= htmlspecialchars($mensaje) ?></div>

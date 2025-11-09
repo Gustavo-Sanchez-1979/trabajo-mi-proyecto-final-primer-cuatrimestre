@@ -1,42 +1,52 @@
 <?php
 // controller/puesto.php
 
+// 🔐 primero traemos las funciones de sesión/roles
+require_once __DIR__ . '/../auth.php';
+
+// luego el modelo
 require_once __DIR__ . '/../model/Puesto.php';
 
 class PuestoController
 {
-  // Título que usará el layout en <title> y <h1>
   public string $page_title = 'Puestos';
-  // Nombre de la vista a renderizar dentro de /views/puesto/ (listar.php o form.php)
   public string $view = 'listar';
-  // Instancia del modelo (capa de datos)
   private Puesto $puestoModel;
 
   public function __construct()
   {
-    // Creamos el modelo (conexión y métodos SQL listos para usar)
     $this->puestoModel = new Puesto();
   }
 
-  /** LISTAR - ?c=puesto&a=list */
+  /** LISTAR - ?c=puesto&a=list
+   * cualquiera logueado puede ver
+   */
   public function list(): array
   {
+    requireLogin(); // 🔐 tiene que estar logueado
     $this->page_title = 'Listado de Puestos';
     $this->view = 'listar';
     return ['puestos' => $this->puestoModel->all()];
   }
 
-  /** FORM NUEVO - ?c=puesto&a=form */
+  /** FORM NUEVO - ?c=puesto&a=form
+   * solo admin o editor
+   */
   public function form(): array
   {
+    requireRole(['admin','editor']); // 🔐
     $this->page_title = 'Nuevo Puesto';
     $this->view = 'form';
     return ['errores' => []];
   }
 
-  /** GUARDAR NUEVO (POST) - ?c=puesto&a=save */
+  /** GUARDAR NUEVO (POST) - ?c=puesto&a=save
+   * solo admin o editor
+   */
   public function save(): array
   {
+    requireRole(['admin','editor']); // 🔐
+
     $nombre = trim($_POST['nombre'] ?? '');
     $tarea  = trim($_POST['tarea']  ?? '');
     $errores = [];
@@ -63,9 +73,13 @@ class PuestoController
     exit;
   }
 
-  /** EDITAR (cargar datos) - ?c=puesto&a=edit&id=123 */
+  /** EDITAR (cargar datos) - ?c=puesto&a=edit&id=123
+   * solo admin o editor
+   */
   public function edit(): array
   {
+    requireRole(['admin','editor']); // 🔐
+
     $id = (int)($_GET['id'] ?? 0);
     $puesto = $this->puestoModel->find($id);
     if (!$puesto) {
@@ -76,9 +90,13 @@ class PuestoController
     return ['puesto' => $puesto, 'errores' => []];
   }
 
-  /** ACTUALIZAR (POST) - ?c=puesto&a=update */
+  /** ACTUALIZAR (POST) - ?c=puesto&a=update
+   * solo admin o editor
+   */
   public function update(): array
   {
+    requireRole(['admin','editor']); // 🔐
+
     $id     = (int)($_POST['id'] ?? 0);
     $nombre = trim($_POST['nombre'] ?? '');
     $tarea  = trim($_POST['tarea']  ?? '');
@@ -105,29 +123,29 @@ class PuestoController
     exit;
   }
 
-  /** ELIMINAR - ?c=puesto&a=delete&id=123 */
-  public function delete(): void
-  {
-    $id = (int)($_GET['id'] ?? 0);
+  /** ELIMINAR - ?c=puesto&a=delete&id=123
+   * solo admin
+   */
+public function delete(): void {
+  requireRole(['admin']); // 🔐 SOLO admin puede eliminar
 
-    if (!$id) {
-      echo "<div class='alert alert-danger text-center'>ID inválido.</div>";
-      echo "<div class='text-center mt-3'><a class='btn btn-secondary' href='?c=puesto&a=list'>Volver</a></div>";
-      return;
-    }
+  $id = (int)($_GET['id'] ?? 0);
 
-    // El modelo ya bloquea si hay empleados asignados (canDelete dentro de delete)
-    if (!$this->puestoModel->delete($id)) {
-      echo "<div class='alert alert-danger text-center'>
-              No se puede eliminar el puesto: está asignado a uno o más empleados.
-            </div>";
-      echo "<div class='text-center mt-3'>
-              <a class='btn btn-secondary' href='?c=puesto&a=list'>Volver</a>
-            </div>";
-      return;
-    }
-
-    header("Location: ?c=puesto&a=list");
-    exit;
+  if (!$id) {
+    echo "<div class='alert alert-danger text-center'>ID inválido.</div>";
+    echo "<div class='text-center mt-3'><a class='btn btn-secondary' href='?c=puesto&a=list'>Volver</a></div>";
+    return;
   }
+
+  if (!$this->puestoModel->delete($id)) {
+    echo "<div class='alert alert-danger text-center'>
+            No se puede eliminar el puesto: está asignado a uno o más empleados.
+          </div>";
+    echo "<div class='text-center mt-3'><a class='btn btn-secondary' href='?c=puesto&a=list'>Volver</a></div>";
+    return;
+  }
+
+  header("Location: ?c=puesto&a=list");
+  exit;
+}
 }

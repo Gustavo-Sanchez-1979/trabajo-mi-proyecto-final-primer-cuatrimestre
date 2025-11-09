@@ -1,5 +1,10 @@
 <?php
 if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+
+// ✅ (opcional pero recomendado) Usar BASE_URL si tenés config.php
+//    Si todavía no tenés config.php, comentá la línea de abajo o créalo con: define('BASE_URL','/tu-carpeta');
+/*require_once __DIR__ . '/config.php'; // ✅*/
+
 require_once __DIR__ . '/model/db.php';
 
 if (!isset($_SESSION['login_intentos'])) $_SESSION['login_intentos'] = 0;
@@ -14,56 +19,90 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $usuario = trim($_POST['usuario'] ?? '');
     $pass    = $_POST['contrasenia'] ?? '';
 
-    // Traigo usuario exacto y hash
-    $stmt = $conn->prepare("SELECT usuario, contrasenia FROM usuarios WHERE usuario = ?");
+    // ✅ Traigo también id y rol (JOIN a roles)
+    $sql = "SELECT u.id, u.usuario, u.contrasenia, u.role_id, r.nombre AS role_name
+            FROM usuarios u
+            LEFT JOIN roles r ON r.id = u.role_id
+            WHERE u.usuario = ?";
+
+  // Traigo usuario exacto, hash y su rol
+$usuario = trim($_POST['usuario'] ?? '');
+$pass    = $_POST['contrasenia'] ?? '';
+
+if ($usuario === '' || $pass === '') {
+  $error = "Usuario y contraseña son obligatorios.";
+} else {
+  // Traigo usuario exacto, hash y su rol (LEFT JOIN por seguridad)
+  $stmt = $conn->prepare("
+    SELECT u.id, u.usuario, u.contrasenia, u.role_id, r.nombre AS role_name
+    FROM usuarios u
+    LEFT JOIN roles r ON r.id = u.role_id
+    WHERE u.usuario = ?
+    LIMIT 1
+  ");
+
+  if (!$stmt) {
+    // Si la query no preparó, mostramos error genérico
+    error_log("[LOGIN] prepare() falló: " . $conn->error);
+    $error = "Error al intentar ingresar. Intente nuevamente.";
+  } else {
     $stmt->bind_param("s", $usuario);
     $stmt->execute();
     $res = $stmt->get_result();
-    $row = $res->fetch_assoc();
+    $row = $res ? $res->fetch_assoc() : null;
+    $stmt->close();
 
     $ok = false;
     if ($row) {
-      $hash = $row['contrasenia'];
+      $hash = (string)$row['contrasenia'];
 
-      if (preg_match('/^\$2y\$/', $hash) || preg_match('/^\$argon2/', $hash)) {
-        // bcrypt/argon
+      // ¿bcrypt/argon?
+      if (preg_match('/^\$2y\$/', $hash) || preg_match('/^\$argon2/i', $hash)) {
         $ok = password_verify($pass, $hash);
       } else {
-        // compat SHA1 heredado
+        // Compatibilidad con hashes viejos (SHA1) y migración transparente
         $ok = (sha1($pass) === $hash);
         if ($ok) {
-          // migro a bcrypt
           $nuevo = password_hash($pass, PASSWORD_DEFAULT);
           $upd = $conn->prepare("UPDATE usuarios SET contrasenia = ? WHERE usuario = ?");
-          $upd->bind_param("ss", $nuevo, $row['usuario']);
-          $upd->execute();
+          if ($upd) {
+            $upd->bind_param("ss", $nuevo, $row['usuario']);
+            $upd->execute();
+            $upd->close();
+          }
         }
       }
     }
+     }
+     }
 
-    if ($ok) {
+    if ($ok && $row) {
       $_SESSION['login_intentos'] = 0;
       session_regenerate_id(true);
-      $_SESSION['usuario'] = $row['usuario']; // exacto como está en DB
+
+      // Seteamos SIEMPRE usuario + rol
+      $_SESSION['user_id']   = (int)$row['id'];
+      $_SESSION['usuario']   = $row['usuario'];
+      $_SESSION['role_id']   = (int)($row['role_id'] ?? 3);               // 3 = lector
+      $_SESSION['user_role'] = $row['role_name'] ?: 'lector';             // 'admin'|'editor'|'lector'
+
       header("Location: index.php?c=empleado&a=list");
       exit();
     } else {
-      $_SESSION['login_intentos']++;
-      $error = "Usuario o contraseña incorrectos";
+      $_SESSION['login_intentos'] = ($_SESSION['login_intentos'] ?? 0) + 1;
+      $error = "Usuario o contraseña incorrectos.";
     }
   }
 }
+  
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
   <title>Ingreso al sistema</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-
 <body class="bg-light">
   <div class="container mt-5 col-md-4">
     <div class="card shadow p-4">
@@ -79,10 +118,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
           <input type="password" name="contrasenia" class="form-control" required>
         </div>
         <button class="btn btn-primary w-100" type="submit">Ingresar</button>
-        <a href="/trabajo-mi-proyecto-final-primer-cuatrimestre/index.php" class="btn btn-outline-secondary w-100 mt-3">Volver</a>
+
+        <?php
+          // ✅ Link Volver usando BASE_URL si existe
+          $volver = (defined('BASE_URL') ? BASE_URL : '') . '/index.php';
+        ?>
+        <a href="<?= htmlspecialchars($volver) ?>" class="btn btn-outline-secondary w-100 mt-3">Volver</a>
       </form>
     </div>
   </div>
 </body>
-
 </html>

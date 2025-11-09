@@ -1,7 +1,8 @@
 <?php
 // controller/empleado.php
 
-// Importamos los modelos que usa este controlador
+// 🔐 Autenticación y helpers de roles
+require_once __DIR__ . '/../auth.php';
 require_once __DIR__ . '/../model/Empleado.php';
 require_once __DIR__ . '/../model/Puesto.php';
 
@@ -41,9 +42,9 @@ class EmpleadoController {
    * Devuelve un array $data que el router le pasa a la vista.
    */
   public function list(): array {
+    requireLogin(); // 🔐 cualquier usuario logueado puede ver
     $this->page_title = 'Listado de Empleados';
     $this->view = 'listar';
-    // Llama al modelo para traer la data (idealmente con LEFT JOIN a puestos)
     return [
       'empleados' => $this->empleadoModel->all()
     ];
@@ -54,11 +55,12 @@ class EmpleadoController {
    * Muestra el formulario para crear un empleado (carga el combo de puestos)
    */
   public function form(): array {
+    requireRole(['admin','editor']); // 🔐 crear: editor o admin
     $this->page_title = 'Nuevo Empleado';
     $this->view = 'form';
     return [
       'puestos' => $this->puestoModel->all(), // llena el <select name="puesto_id">
-      'errores' => []                          // array para mostrar validaciones
+      'errores' => []
     ];
   }
 
@@ -67,6 +69,8 @@ class EmpleadoController {
    * Valida datos requeridos, llama al modelo->create y redirige al listado.
    */
   public function save(): array {
+    requireRole(['admin','editor']); // 🔐 guardar: editor o admin
+
     // Campos obligatorios mínimos
     $req = ['nombre','apellido','dni','empresa','puesto_id'];
     $errores = [];
@@ -74,43 +78,46 @@ class EmpleadoController {
       if (empty($_POST[$r])) $errores[] = "Falta el campo: {$r}";
     }
 
-    // Si hay errores, volvemos al form con los mensajes y los puestos cargados
     if ($errores) {
       $this->page_title = 'Nuevo Empleado';
       $this->view = 'form';
       return ['puestos' => $this->puestoModel->all(), 'errores' => $errores];
     }
 
-    // Insertar en BD
-    $ok = $this->empleadoModel->create($_POST);
-
-    // Si falla (DNI único, FK inválida, etc.) mostramos error y volvemos al form
-    if (!$ok) {
-      $errores[] = 'No se pudo guardar (¿DNI duplicado o puesto inválido?).';
+    try {
+      $ok = $this->empleadoModel->create($_POST);
+      if (!$ok) {
+        throw new Exception('No se pudo guardar (¿DNI duplicado o puesto inválido?).');
+      }
+    } catch (Throwable $e) {
       $this->page_title = 'Nuevo Empleado';
       $this->view = 'form';
-      return ['puestos' => $this->puestoModel->all(), 'errores' => $errores];
+      return [
+        'puestos' => $this->puestoModel->all(),
+        'errores' => ['Error al guardar: ' . $e->getMessage()]
+      ];
     }
 
-    // ÉXITO: redirigimos al listado (no hacer echo antes de header)
     header("Location: ?c=empleado&a=list");
     exit;
-  }
+  } // 👈 CIERRE QUE FALTABA
 
   /* ===== EDITAR (cargar datos) =====
    * Ruta: ?c=empleado&a=edit&id=123
    * Busca el empleado por id y reusa la misma vista 'form' para editar.
    */
   public function edit(): array {
-    $id  = (int)($_GET['id'] ?? 0);                 // id desde la URL
-    $emp = $this->empleadoModel->find($id);        // busca registro en BD
-    if (!$emp) { die("Empleado no encontrado"); }  // manejo simple (podés renderizar error lindo)
+    requireRole(['admin','editor']); // 🔐 editar: editor o admin
+
+    $id  = (int)($_GET['id'] ?? 0);
+    $emp = $this->empleadoModel->find($id);
+    if (!$emp) { die("Empleado no encontrado"); }
 
     $this->page_title = 'Editar Empleado';
     $this->view = 'form';
     return [
-      'empleado' => $emp,                 // datos actuales para completar el form
-      'puestos'  => $this->puestoModel->all(), // para el <select>
+      'empleado' => $emp,
+      'puestos'  => $this->puestoModel->all(),
       'errores'  => []
     ];
   }
@@ -120,9 +127,10 @@ class EmpleadoController {
    * Valida, hace UPDATE y redirige a la lista. Si hay errores, vuelve a 'form'.
    */
   public function update(): array {
-    $id = (int)($_POST['id'] ?? 0);      // id oculto del formulario
+    requireRole(['admin','editor']); // 🔐 actualizar: editor o admin
 
-    // Validación mínima
+    $id = (int)($_POST['id'] ?? 0);
+
     $req = ['nombre','apellido','dni','empresa','puesto_id'];
     $errores = [];
     if (!$id) $errores[] = 'ID inválido.';
@@ -130,50 +138,49 @@ class EmpleadoController {
       if (empty($_POST[$r])) $errores[] = "Falta el campo: {$r}";
     }
 
-    // Si falla validación, volvemos al form con lo que el usuario cargó
     if ($errores) {
       $this->page_title = 'Editar Empleado';
       $this->view = 'form';
       return [
-        // Mezclamos el id con POST para que se rellene el formulario
         'empleado' => array_merge(['id'=>$id], $_POST),
         'puestos'  => $this->puestoModel->all(),
         'errores'  => $errores
       ];
     }
 
-    // Ejecutar UPDATE
-    $ok = $this->empleadoModel->update($id, $_POST);
-
-    // Si falla (p.ej. UNIQUE(dni)), mostramos error y mantenemos lo cargado
-    if (!$ok) {
+    try {
+      $ok = $this->empleadoModel->update($id, $_POST);
+      if (!$ok) {
+        throw new Exception('No se pudo actualizar (¿DNI duplicado?).');
+      }
+    } catch (Throwable $e) {
       $this->page_title = 'Editar Empleado';
       $this->view = 'form';
       return [
         'empleado' => array_merge(['id'=>$id], $_POST),
         'puestos'  => $this->puestoModel->all(),
-        'errores'  => ['No se pudo actualizar (¿DNI duplicado?)']
+        'errores'  => ['Error al actualizar: ' . $e->getMessage()]
       ];
     }
 
-    // ÉXITO: volvemos al listado
     header("Location: ?c=empleado&a=list");
     exit;
-  }
+  } // 👈 CIERRE QUE FALTABA
 
   /* ===== ELIMINAR =====
    * Ruta: ?c=empleado&a=delete&id=123
    * Elimina por id y redirige. Si falla, muestra un mensaje básico.
    */
   public function delete(): void {
-    $id = (int)($_GET['id'] ?? 0);
-    if ($id && $this->empleadoModel->delete($id)) {
-      header("Location: ?c=empleado&a=list");
-      exit;
-    } else {
-      // Podés reemplazar por una vista de error más prolija
-      echo "<div class='alert alert-danger text-center'>No se pudo eliminar el empleado.</div>";
-      echo "<div class='text-center mt-3'><a class='btn btn-secondary' href='?c=empleado&a=list'>Volver</a></div>";
-    }
+  requireRole(['admin']); // 🔐 SOLO admin puede eliminar
+
+  $id = (int)($_GET['id'] ?? 0);
+  if ($id && $this->empleadoModel->delete($id)) {
+    header("Location: ?c=empleado&a=list");
+    exit;
+  } else {
+    echo "<div class='alert alert-danger text-center'>No se pudo eliminar el empleado.</div>";
+    echo "<div class='text-center mt-3'><a class='btn btn-secondary' href='?c=empleado&a=list'>Volver</a></div>";
   }
+}
 }

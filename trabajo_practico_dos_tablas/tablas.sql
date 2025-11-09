@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-10-2025 a las 23:26:46
+-- Tiempo de generación: 07-11-2025 a las 02:05:08
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -78,7 +78,6 @@ CREATE TABLE `puestos` (
 --
 
 INSERT INTO `puestos` (`id`, `nombre`, `tarea`) VALUES
-(7, 'Preprensa', 'moldeador'),
 (8, 'Desmolde', 'Desmoldar'),
 (9, 'Tinas queseras', 'Quesero'),
 (10, 'Pasteurizador', 'operar los equipos'),
@@ -95,27 +94,50 @@ INSERT INTO `puestos` (`id`, `nombre`, `tarea`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `roles`
+--
+
+CREATE TABLE `roles` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `roles`
+--
+
+INSERT INTO `roles` (`id`, `nombre`) VALUES
+(1, 'admin'),
+(2, 'editor'),
+(3, 'lector');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `usuarios`
 --
 
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
   `usuario` varchar(50) NOT NULL,
-  `contrasenia` varchar(255) NOT NULL
+  `contrasenia` varchar(255) NOT NULL,
+  `role_id` int(11) NOT NULL DEFAULT 3
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `usuario`, `contrasenia`) VALUES
-(1, 'gus', '$2y$10$PKE14oSU4/zzjILFqu8SrOuUgRShZ7t/IoM1svoTvNcKwmJKJ.bOu'),
-(2, 'carlos', '$2y$10$uH26NqouVRPL4WE2A30tUu9/h3krKnMikLRyIfpR6fDgSOaEw9sdO'),
-(3, 'admin', '$2y$10$SPRgp8NlJQQWUmBoN9NPuumxROuff4xSL5Q4rJU4nuxAyArpklqSe'),
-(4, 'mariel', '$2y$10$yME2vYJRNEiH56/CcSrVbem1jMx1OVUh/1Wg.7Bq82KQHZNYp5D62'),
-(5, 'juan', '$2y$10$eamMO5SaVJA0F8PByqi5QOCfIKKPLIpq/n/SS3bHViExYpDpaHQkm'),
-(6, 'Marta', '$2y$10$PU8Mp0HBl3dNVbpAvmIGIe0mRKdQHDcEJbeU66AvvZ6oNk4QoV8Ce'),
-(7, 'Juan Pablo', '$2y$10$xl7gP8NLQfOUc.4Ua4RMCevSQJ4VMSb6HWT6rqEBpnYlAYnC6rQpm');
+INSERT INTO `usuarios` (`id`, `usuario`, `contrasenia`, `role_id`) VALUES
+(1, 'gus', '$2y$10$PKE14oSU4/zzjILFqu8SrOuUgRShZ7t/IoM1svoTvNcKwmJKJ.bOu', 3),
+(2, 'carlos', '$2y$10$uH26NqouVRPL4WE2A30tUu9/h3krKnMikLRyIfpR6fDgSOaEw9sdO', 3),
+(3, 'admin', '$2y$10$SPRgp8NlJQQWUmBoN9NPuumxROuff4xSL5Q4rJU4nuxAyArpklqSe', 1),
+(4, 'mariel', '$2y$10$yME2vYJRNEiH56/CcSrVbem1jMx1OVUh/1Wg.7Bq82KQHZNYp5D62', 3),
+(5, 'juan', '$2y$10$eamMO5SaVJA0F8PByqi5QOCfIKKPLIpq/n/SS3bHViExYpDpaHQkm', 3),
+(6, 'Marta', '$2y$10$PU8Mp0HBl3dNVbpAvmIGIe0mRKdQHDcEJbeU66AvvZ6oNk4QoV8Ce', 3),
+(7, 'Juan Pablo', '$2y$10$xl7gP8NLQfOUc.4Ua4RMCevSQJ4VMSb6HWT6rqEBpnYlAYnC6rQpm', 3),
+(10, 'gustavo', '$2y$10$SPRgp8NlJQQWUmBoN9NPuumxROuff4xSL5Q4rJU4nuxAyArpklqSe', 3),
+(11, 'profe', '$2y$10$PKE14oSU4/zzjILFqu8SrOuUgRShZ7t/IoM1svoTvNcKwmJKJ.bOu', 1);
 
 --
 -- Índices para tablas volcadas
@@ -137,11 +159,20 @@ ALTER TABLE `puestos`
   ADD UNIQUE KEY `uq_puesto_nombre` (`nombre`);
 
 --
+-- Indices de la tabla `roles`
+--
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nombre` (`nombre`);
+
+--
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `usuario` (`usuario`);
+  ADD UNIQUE KEY `usuario` (`usuario`),
+  ADD UNIQUE KEY `uq_usuarios_usuario` (`usuario`),
+  ADD KEY `fk_usuarios_roles` (`role_id`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -157,13 +188,19 @@ ALTER TABLE `empleados`
 -- AUTO_INCREMENT de la tabla `puestos`
 --
 ALTER TABLE `puestos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT de la tabla `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Restricciones para tablas volcadas
@@ -174,6 +211,12 @@ ALTER TABLE `usuarios`
 --
 ALTER TABLE `empleados`
   ADD CONSTRAINT `fk_empleado_puesto` FOREIGN KEY (`puesto_id`) REFERENCES `puestos` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD CONSTRAINT `fk_usuarios_roles` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

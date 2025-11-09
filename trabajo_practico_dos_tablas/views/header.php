@@ -1,82 +1,89 @@
 <!doctype html>
 <html lang="es">
-
 <head>
   <meta charset="utf-8" />
-  <!--
-    viewport para responsive en móviles
-    width=device-width: usa el ancho del dispositivo
-    initial-scale=1: zoom inicial
-  -->
+  <!-- Responsive -->
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!--
-    Título dinámico: viene del controlador ($this->page_title)
-    htmlspecialchars: evita XSS si el título trae caracteres especiales
-  -->
+  <!-- Título dinámico -->
   <title><?= htmlspecialchars($page_title ?? 'App') ?></title>
 
-  <!-- Bootstrap CSS (CDN) para estilos y componentes -->
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
-    /* Estilo base del fondo */
-    body {
-      background: #f4f6f8
-    }
-
-    /* Badge verde para resaltar puestos (si lo usás en tablas) */
-    .badge-puesto {
-      background: #198754;
-    }
-
-    /* Evita que textos largos rompan el layout en celdas de tabla */
-    td,
-    th {
-      word-break: break-word;
-    }
-
-    /* Color más suave para textos pequeños (fechas, etc.) en tablas */
-    td small {
-      color: #6c757d;
-    }
+    body { background:#f4f6f8; }
+    .badge-puesto { background:#198754; }
+    td, th { word-break: break-word; }
+    td small { color:#6c757d; }
   </style>
 </head>
 
-<!--
-  Sugerencia (opcional): para sticky footer
-  <body class="d-flex flex-column min-vh-100">
--->
-
 <body>
-  <!-- Navbar superior oscura -->
-  <nav class="navbar navbar-dark bg-dark">
-    <div class="container">
-      <!-- “Logo” que vuelve al listado principal de empleados -->
-      <!--Boton para cerrar sesión-->
+<?php
+  // Sesión y rol para UI (si no usás roles, podés omitir esto)
+if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+$role    = $_SESSION['user_role'] ?? 'lector';
+$isAdmin = ($role === 'admin');
+$canEdit = in_array($role, ['admin','editor'], true);
+?>
+<!-- Navbar -->
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container d-flex align-items-center justify-content-between">
+
+    <!-- Marca: vuelve al listado principal -->
+    <a class="navbar-brand" href="?c=empleado&a=list">Puestos ↔ Empleados</a>
+
+    <div class="d-flex align-items-center gap-2">
+      <!-- Cerrar sesión / Cambiar credenciales -->
       <a href="logout.php" class="btn btn-danger m-2">Cerrar sesión</a>
-      <a href="cambiar_contrasenia.php" class="btn btn-warning m-2">Cambiar usuario/contraseña</a>
-      <!--Boton para crear un nuevo usuario solo ingresando como administrador-->
-      <a href="nuevo_usuario.php"
-        class="btn btn-success m-2"
-        data-bs-toggle="tooltip"
-        data-bs-placement="bottom"
-        data-bs-title="Solo para ingreso del administrador">
-        Nuevo usuario
+      <a href="cambiar_contrasenia.php" class="btn btn-warning m-2">Cambiar su nombre de usuario/o su contraseña</a>
+
+      <!-- Nuevo usuario (solo admin; si no, mostrar deshabilitado con tooltip) -->
+      <?php if ($isAdmin): ?>
+        <a href="nuevo_usuario.php"
+           class="btn btn-success m-2"
+           data-bs-toggle="tooltip"
+           data-bs-placement="bottom"
+           data-bs-title="Solo para ingreso del administrador">
+          Nuevo usuario
+        </a>
+      <?php else: ?>
+        <span class="d-inline-block m-2" tabindex="0"
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom"
+              data-bs-title="Solo Administrador">
+          <button class="btn btn-success" type="button" disabled style="pointer-events:none;">
+            Nuevo usuario
+          </button>
+        </span>
+      <?php endif; ?>
+
+      <!-- Volver al inicio (¡sin espacios ni saltos en la URL!) -->
+      <a href="/trabajo-mi-proyecto-final-primer-cuatrimestre/index.php" class="btn btn-outline-light m-2">
+        Volver al Inicio
       </a>
 
-      <!-- Botón para volver al inicio -->
-      <a href="/trabajo-mi-proyecto-final-primer-cuatrimestre
-/index.php" class="btn btn-outline-light"> Volver al Inicio</a>
-      <!-- Acciones rápidas a la derecha -->
-      <div class="d-flex gap-2">
-        <a class="btn btn-warning" href="?c=empleado&a=list">Empleado</a>
-        <a class="btn btn-warning" href="?c=puesto&a=list">Puestos</a>
-      </div>
+      <!-- Accesos rápidos -->
+      <a class="btn btn-warning m-2" href="?c=empleado&a=list">Empleado</a>
+      <a class="btn btn-warning m-2" href="?c=puesto&a=list">Puestos</a>
     </div>
-  </nav>
+  </div>
+</nav>
 
-  <!-- Contenedor principal donde se inyectan las vistas -->
-  <div class="container-fluid my-4">
-    <!-- Título de la página (set por cada acción del controlador) -->
-    <h1 class="mb-3"><?= htmlspecialchars($page_title ?? '') ?></h1>
+<!-- Contenido -->
+<div class="container-fluid my-4">
+  <h1 class="mb-3"><?= htmlspecialchars($page_title ?? '') ?></h1>
+</div>
+
+<!-- Bootstrap JS (si no lo cargás en el footer) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Inicializa tooltips para que aparezcan los mensajes
+  document.addEventListener('DOMContentLoaded', function () {
+    var t = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    t.forEach(function (el) { new bootstrap.Tooltip(el); });
+  });
+</script>
+</body>
+</html>
