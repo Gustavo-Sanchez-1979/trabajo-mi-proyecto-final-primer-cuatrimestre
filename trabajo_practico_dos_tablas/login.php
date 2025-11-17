@@ -22,15 +22,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             LEFT JOIN roles r ON r.id = u.role_id
             WHERE u.usuario = ?";
 
-  // Traigo usuario exacto, hash y su rol
-$usuario = trim($_POST['usuario'] ?? '');
-$pass    = $_POST['contrasenia'] ?? '';
+    // Traigo usuario exacto, hash y su rol
+    $usuario = trim($_POST['usuario'] ?? '');
+    $pass    = $_POST['contrasenia'] ?? '';
 
-if ($usuario === '' || $pass === '') {
-  $error = "Usuario y contraseña son obligatorios.";
-} else {
-  // Traigo usuario exacto, hash y su rol (LEFT JOIN por seguridad)
-  $stmt = $conn->prepare("
+    if ($usuario === '' || $pass === '') {
+      $error = "Usuario y contraseña son obligatorios.";
+    } else {
+      // Traigo usuario exacto, hash y su rol (LEFT JOIN por seguridad)
+      $stmt = $conn->prepare("
     SELECT u.id, u.usuario, u.contrasenia, u.role_id, r.nombre AS role_name
     FROM usuarios u
     LEFT JOIN roles r ON r.id = u.role_id
@@ -38,40 +38,40 @@ if ($usuario === '' || $pass === '') {
     LIMIT 1
   ");
 
-  if (!$stmt) {
-    // Si la query no preparó, mostramos error genérico
-    error_log("[LOGIN] prepare() falló: " . $conn->error);
-    $error = "Error al intentar ingresar. Intente nuevamente.";
-  } else {
-    $stmt->bind_param("s", $usuario);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $row = $res ? $res->fetch_assoc() : null;
-    $stmt->close();
-
-    $ok = false;
-    if ($row) {
-      $hash = (string)$row['contrasenia'];
-
-      // ¿bcrypt/argon?
-      if (preg_match('/^\$2y\$/', $hash) || preg_match('/^\$argon2/i', $hash)) {
-        $ok = password_verify($pass, $hash);
+      if (!$stmt) {
+        // Si la query no preparó, mostramos error genérico
+        error_log("[LOGIN] prepare() falló: " . $conn->error);
+        $error = "Error al intentar ingresar. Intente nuevamente.";
       } else {
-        // Compatibilidad con hashes viejos (SHA1) y migración transparente
-        $ok = (sha1($pass) === $hash);
-        if ($ok) {
-          $nuevo = password_hash($pass, PASSWORD_DEFAULT);
-          $upd = $conn->prepare("UPDATE usuarios SET contrasenia = ? WHERE usuario = ?");
-          if ($upd) {
-            $upd->bind_param("ss", $nuevo, $row['usuario']);
-            $upd->execute();
-            $upd->close();
+        $stmt->bind_param("s", $usuario);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res ? $res->fetch_assoc() : null;
+        $stmt->close();
+
+        $ok = false;
+        if ($row) {
+          $hash = (string)$row['contrasenia'];
+
+          // ¿bcrypt/argon?
+          if (preg_match('/^\$2y\$/', $hash) || preg_match('/^\$argon2/i', $hash)) {
+            $ok = password_verify($pass, $hash);
+          } else {
+            // Compatibilidad con hashes viejos (SHA1) y migración transparente
+            $ok = (sha1($pass) === $hash);
+            if ($ok) {
+              $nuevo = password_hash($pass, PASSWORD_DEFAULT);
+              $upd = $conn->prepare("UPDATE usuarios SET contrasenia = ? WHERE usuario = ?");
+              if ($upd) {
+                $upd->bind_param("ss", $nuevo, $row['usuario']);
+                $upd->execute();
+                $upd->close();
+              }
+            }
           }
         }
       }
     }
-     }
-     }
 
     if ($ok && $row) {
       $_SESSION['login_intentos'] = 0;
@@ -91,15 +91,17 @@ if ($usuario === '' || $pass === '') {
     }
   }
 }
-  
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>Ingreso al sistema</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-light">
   <div class="container mt-5 col-md-4">
     <div class="card shadow p-4">
@@ -117,7 +119,7 @@ if ($usuario === '' || $pass === '') {
         <button class="btn btn-primary w-100" type="submit">Ingresar</button>
 
         <?php
-          // ✅ Link Volver 
+        // ✅ Link Volver 
         $volver = '/trabajo-mi-proyecto-final-primer-cuatrimestre/index.php';
         ?>
         <a href="<?= htmlspecialchars($volver) ?>" class="btn btn-outline-secondary w-100 mt-3">Volver</a>
@@ -125,4 +127,5 @@ if ($usuario === '' || $pass === '') {
     </div>
   </div>
 </body>
+
 </html>

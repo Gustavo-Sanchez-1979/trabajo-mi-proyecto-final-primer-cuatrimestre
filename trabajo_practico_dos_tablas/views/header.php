@@ -50,7 +50,7 @@
 
       <div class="d-flex align-items-center gap-2">
         <!-- Cerrar sesión / Cambiar credenciales -->
-       <a
+        <a
           href="logout.php?next=/trabajo-mi-proyecto-final-primer-cuatrimestre/trabajo_practico_dos_tablas/login.php"
           class="btn btn-outline-light m-2"
           onclick="return confirm('⚠️ Al Cerrar sesión  devera volver a logiarse para ingresar a administracion de empleados la sesión se cerrará automaticamente por seguridad. ¿Continuar?');">
