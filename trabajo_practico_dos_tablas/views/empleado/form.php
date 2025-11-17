@@ -25,116 +25,74 @@ $editando = !empty($empleado);         // true si estamos editando (hay datos), 
   - Si $editando es false → action = save   (POST a ?c=empleado&a=save)
   La clase "row g-3" usa el grid de Bootstrap con separación (gutter) entre inputs.
 -->
-<form method="post" action="?c=empleado&a=<?= $editando ? 'update' : 'save' ?>" class="row g-3">
-
-  <?php if ($editando): ?>
-    <!-- Campo oculto con el ID del empleado para la actualización -->
-    <input type="hidden" name="id" value="<?= (int)$empleado['id'] ?>">
-  <?php endif; ?>
-
-  <!-- Nombre (requerido) -->
-  <div class="col-md-4">
-    <label class="form-label">Nombre *</label>
-    <!--
-      value usa el operador null-coalescing para precargar en edición
-      htmlspecialchars evita XSS si el valor viene con caracteres especiales
-    -->
-    <input name="nombre" class="form-control" required
-           value="<?= htmlspecialchars($empleado['nombre'] ?? '') ?>">
-  </div>
-
-  <!-- Apellido (requerido) -->
-  <div class="col-md-4">
-    <label class="form-label">Apellido *</label>
-    <input name="apellido" class="form-control" required
-           value="<?= htmlspecialchars($empleado['apellido'] ?? '') ?>">
-  </div>
-
-  <!-- DNI (requerido). Podés agregar pattern="\d{7,11}" para validar solo números -->
-  <div class="col-md-4">
-    <label class="form-label">DNI *</label>
-    <input name="dni" class="form-control" required
-           value="<?= htmlspecialchars($empleado['dni'] ?? '') ?>">
-  </div>
-
-  <!-- Empresa (requerido) -->
+<form method="post" action="?c=empleado&a=save" class="row g-3">
   <div class="col-md-6">
-    <label class="form-label">Empresa *</label>
-    <input name="empresa" class="form-control" required
-           value="<?= htmlspecialchars($empleado['empresa'] ?? '') ?>">
+    <label class="form-label">Nombre</label>
+    <input name="nombre" class="form-control" required>
   </div>
 
-  <!-- Puesto (FK) (requerido)
-       - Llena el <select> con $puestos
-       - Marca selected si el empleado ya tiene puesto_id (en edición)
-       - OJO: según tu modelo Puesto::all():
-         * Si usás SELECT id, nombre AS puesto, tarea ... → mostrar $p['puesto']
-         * Si usás SELECT id, nombre, tarea ...           → mostrar $p['nombre']
-       Abajo usamos un fallback: primero intenta $p['nombre'], si no existe usa $p['puesto'].
-  -->
   <div class="col-md-6">
-    <label class="form-label">Puesto (FK) *</label>
+    <label class="form-label">Apellido</label>
+    <input name="apellido" class="form-control" required>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">DNI</label>
+    <input name="dni" class="form-control" required>
+  </div>
+
+  <div class="col-md-8">
+    <label class="form-label">Empresa</label>
+    <input name="empresa" class="form-control" required>
+  </div>
+
+  <div class="col-md-12">
+    <label class="form-label">Domicilio</label>
+    <input name="domicilio" class="form-control">
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Ciudad</label>
+    <input name="ciudad" class="form-control">
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Provincia</label>
+    <input name="provincia" class="form-control">
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">País</label>
+    <input name="pais" class="form-control" value="Argentina">
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Teléfono</label>
+    <input name="telefono" class="form-control">
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Email</label>
+    <input name="email" type="email" class="form-control">
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Puesto</label>
     <select name="puesto_id" class="form-select" required>
-      <option value="">Seleccionar…</option>
-      <?php foreach ($puestos as $p): ?>
-        <option value="<?= (int)$p['id'] ?>"
-          <?= (isset($empleado['puesto_id']) && (int)$empleado['puesto_id'] === (int)$p['id']) ? 'selected' : '' ?>>
-          <?= htmlspecialchars($p['nombre'] ?? $p['puesto'] ?? '') ?>
+      <option value="">-- Seleccionar --</option>
+      <?php foreach (($data['puestos'] ?? []) as $p): ?>
+        <option value="<?= (int)$p['id'] ?>">
+          <?= htmlspecialchars($p['puesto'] ?? $p['nombre']) ?>
         </option>
       <?php endforeach; ?>
     </select>
   </div>
 
-  <!-- Domicilio (opcional) -->
-  <div class="col-md-6">
-    <label class="form-label">Domicilio</label>
-    <input name="domicilio" class="form-control"
-           value="<?= htmlspecialchars($empleado['domicilio'] ?? '') ?>">
-  </div>
-
-  <!-- Ciudad (opcional) -->
-  <div class="col-md-6">
-    <label class="form-label">Ciudad</label>
-    <input name="ciudad" class="form-control"
-           value="<?= htmlspecialchars($empleado['ciudad'] ?? '') ?>">
-  </div>
-
-  <!-- Provincia (opcional) -->
-  <div class="col-md-6">
-    <label class="form-label">Provincia</label>
-    <input name="provincia" class="form-control"
-           value="<?= htmlspecialchars($empleado['provincia'] ?? '') ?>">
-  </div>
-
-  <!-- País (opcional, por defecto Argentina) -->
-  <div class="col-md-6">
-    <label class="form-label">País</label>
-    <input name="pais" class="form-control"
-           value="<?= htmlspecialchars($empleado['pais'] ?? 'Argentina') ?>">
-  </div>
-
-  <!-- Teléfono (opcional) -->
-  <div class="col-md-6">
-    <label class="form-label">Teléfono</label>
-    <input name="telefono" class="form-control"
-           value="<?= htmlspecialchars($empleado['telefono'] ?? '') ?>">
-  </div>
-
-  <!-- Email (opcional, type=email hace validación básica del lado del navegador) -->
-  <div class="col-md-6">
-    <label class="form-label">Email</label>
-    <input name="email" type="email" class="form-control"
-           value="<?= htmlspecialchars($empleado['email'] ?? '') ?>">
-  </div>
-
-  <!-- Botones de acción -->
   <div class="col-12">
-    <!-- El texto del botón cambia según el modo -->
-    <button class="btn btn-primary"><?= $editando ? 'Actualizar' : 'Guardar' ?></button>
-    <a class="btn btn-secondary" href="?c=empleado&a=list">Cancelar</a>
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a href="?c=empleado&a=list" class="btn btn-outline-secondary">Cancelar</a>
   </div>
 </form>
-
 
 
 

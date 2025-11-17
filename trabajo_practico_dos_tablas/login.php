@@ -120,8 +120,8 @@ if ($usuario === '' || $pass === '') {
         <button class="btn btn-primary w-100" type="submit">Ingresar</button>
 
         <?php
-          // ✅ Link Volver usando BASE_URL si existe
-          $volver = (defined('BASE_URL') ? BASE_URL : '') . '/index.php';
+          // ✅ Link Volver 
+        $volver = '/trabajo-mi-proyecto-final-primer-cuatrimestre/index.php';
         ?>
         <a href="<?= htmlspecialchars($volver) ?>" class="btn btn-outline-secondary w-100 mt-3">Volver</a>
       </form>

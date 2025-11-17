@@ -5,6 +5,8 @@ class Empleado {
   // Conexión MySQLi que usarán todos los métodos del modelo
   private mysqli $con;
 
+  public ?string $lastError = null; // 👈
+
   public function __construct() {
     // Instancia la conexión y la guarda en $this->con
     $db = new Db();
