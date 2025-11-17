@@ -1,9 +1,6 @@
 <?php
 if (session_status() !== PHP_SESSION_ACTIVE) session_start();
 
-// ✅ (opcional pero recomendado) Usar BASE_URL si tenés config.php
-//    Si todavía no tenés config.php, comentá la línea de abajo o créalo con: define('BASE_URL','/tu-carpeta');
-/*require_once __DIR__ . '/config.php'; // ✅*/
 
 require_once __DIR__ . '/model/db.php';
 
