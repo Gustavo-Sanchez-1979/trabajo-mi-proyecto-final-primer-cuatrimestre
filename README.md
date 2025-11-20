@@ -7,3 +7,4 @@
 1/11/2025 " se agrega boton volver por si ingresan a administrador de empleados y no estan registrados puedan volver a pagina principal que faltaba "
 9/11/2025 " se agrego mas seguridad y tabla de roles "
 17/11/2025 "se agrega seguridad en cierre de sesion y en crear usuarios se agrego para poder asignar roles"
+19/11/2025 "se agrego para editar y eliminar usuarios tambien el editar empleados se corrigio"
